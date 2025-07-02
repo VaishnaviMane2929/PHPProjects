@@ -442,23 +442,24 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-              <a href="<?= site_url('Admin_controller/add_user') ?>" class="nav-link">
+              <a href="<?= site_url('Admin_controller/emp_add') ?>" class="nav-link">
 
                   <i class="far fa-circle nav-icon"></i>
                   <p>USER ADD</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?= site_url('Admin_controller/show_emp') ?>" class="nav-link">
+                <a href="<?= site_url('Admin_controller/show_employee') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>UserShow</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?=base_url()?>assets/pages/tables/jsgrid.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>jsGrid</p>
-                </a>
+                <a href="<?= base_url('login') ?>" class="nav-link">
+  <i class="far fa-circle nav-icon"></i>
+  <p>Login</p>
+</a>
+
               </li>
             </ul>
           </li>
