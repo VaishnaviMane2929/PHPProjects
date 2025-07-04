@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AdminLTE 3 | Dashboard</title>
-
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
   <!-- Google Font: Source Sans Pro -->
@@ -276,14 +275,14 @@
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-table"></i>
               <p>
-                User Management
+              User Management
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
              
               <li class="nav-item">
-                <a href="<?= site_url('Admin_controller/show_emp') ?>" class="nav-link">
+                <a href="<?= site_url('Admin_controller/show_employee') ?>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>UserShow</p>
                 </a>
@@ -296,7 +295,6 @@
               </li>
             </ul>
           </li>
-
           <li class="nav-item">
           <a href="<?= site_url('admin_Controller/logout') ?>" class="nav-link"  onclick="return confirm('Are you sure you want to logout?');"> 
 
@@ -304,14 +302,26 @@
             <p>Logout</p>
           </a>
         </li>
+         
+              
 
-        
+             
+          
+         
+         
+          
+         
+          
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
   </aside>
+
+
+
+
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -320,12 +330,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Product Form</h1>
+            <h1>DataTables</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Product Form</li>
+              <li class="breadcrumb-item active">DataTables</li>
             </ol>
           </div>
         </div>
@@ -334,70 +344,69 @@
 
     <!-- Main content -->
     <section class="content">
-    
-  <form class="row g-3" style="margin: 20px;" action="<?php echo site_url('Admin_Controller/addProduct'); ?>" method="post" >
-  <div class="col-md-6">
-    <label for="Name" class="form-label">Product Name</label>
-    <input type="text" class="form-control" name="Name" id="Name">
-  </div>
-  <div class="col-md-6">
-    <label for="price" class="form-label">price</label>
-    <input type="number" class="form-control"  name="price" id="price">
-  </div>
-  <div class="col-6">
-    <label for="date" class="form-label">date</label>
-    <input type="date" class="form-control" name="date" id="date">
-  </div>
-  <div class="col-6">
-    <label for="invoiceNumber" class="form-label">invoice Number</label>
-    <input type="text" class="form-control" name="invoiceNumber" id="invoiceNumber" >
-  </div>
- 
-  <br/>
- 
-<input type="hidden" name="pid" value="<?= isset($latest_pid) ? $latest_pid : '' ?>">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">DataTable with minimal features & hover style</h3>
+                <button class="btn btn-primary float-right" onclick="window.location.href='<?= site_url('Admin_controller/add_user') ?>'">Add User</button>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                  <th>ID</th>
+                  <th>Img</th>
+                  <th>Name</th>
+                  <th>Contact</th>
+                  <th>Email</th>
+                  <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                 
+                  <?php foreach ($emp as $e): ?>
+            <tr>
+              <td><?= $e->eid ?></td>
+              <td><img src="<?= base_url('uploads/' . $e->ephoto) ?>" alt="img" height="50px"  width="50px" onclick="showImage('<?= base_url('uploads/' . $e->ephoto) ?>', '<?= htmlspecialchars($e->ename) ?>', '<?= htmlspecialchars($e->econt) ?>', '<?= htmlspecialchars($e->egmail) ?>')"></td>
+              <td><?= $e->ename ?></td>
+              <td><?= $e->econt ?></td>
+              <td><?= $e->egmail ?></td>
+              <td>
+                <a href="<?= site_url('Admin_controller/edit/'.$e->eid) ?>" class="btn btn-sm btn-primary mb-1">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <a href="<?= site_url('Admin_controller/delete/'.$e->eid) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this employee?')">
+                  <i class="fas fa-trash-alt"></i>
+                </a>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+                 
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
 
-<br/> <br/> <br/> <br/> <br/>
-<div class="table-responsive">
-  <table id="invoiceTable" class="table table-bordered table-striped align-middle">
-    <thead class="table-dark">
-      <tr>
-        <th>Item</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Total Price</th>
-        <th>
-          <button class="btn btn-success btn-sm" type="button" onclick="addRow()">
-            <i class="fa fa-plus"></i> Add
-          </button>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><input type="text" name="productname[]" class="form-control" required></td>
-        <td><input type="number" name="qty[]" class="form-control" required></td>
-        <td><input type="number" name="price[]" class="form-control" required></td>
-        <td><input type="number" name="totalPrice[]" class="form-control" required></td>
-        <td>
-          <button class="btn btn-danger btn-sm" type="button" onclick="removeRow(this)">
-            <i class="fa fa-trash"></i> Delete
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-
-    
-    <div class="col-6">
-    <button class="btn btn-primary" type="submit">Submit item</button>
-  </div>
-    
-</form>
-
-   <!-- /.container-fluid -->
+            <!-- <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">DataTable with default features</h3>
+              </div> -->
+              <!-- /.card-header -->
+              
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
     </section>
     <!-- /.content -->
   </div>
@@ -417,75 +426,44 @@
 </div>
 <!-- ./wrapper -->
 
-
-<script>
-
-document.addEventListener('input', function(e) {
-  if (e.target.classList.contains('price') || e.target.classList.contains('qty')) {
-    const row = e.target.closest('tr');
-    const qty = parseFloat(row.querySelector('.qty').value) || 0;
-    const price = parseFloat(row.querySelector('.price').value) || 0;
-    const total = qty * price;
-    row.querySelector('.totalPrice').value = total.toFixed(2);
-  }
-});
-
-function addRow() {
-    const table = document.getElementById('invoiceTable').getElementsByTagName('tbody')[0];
-    const newRow = table.rows[0].cloneNode(true);
-
-    // Clear the input values
-    const inputs = newRow.getElementsByTagName('input');
-    for (let input of inputs) {
-        input.value = '';
-    }
-
-    table.appendChild(newRow);
-}
-
-function removeRow(btn) {
-    const row = btn.closest('tr');
-    const table = row.parentNode;
-    if (table.rows.length > 1) {
-        table.removeChild(row);
-    }
-}
-</script>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-  
-   
 <!-- jQuery -->
 <script src="<?=base_url()?>assets/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="<?=base_url()?>assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- Select2 -->
-<script src="<?=base_url()?>assets/plugins/select2/js/select2.full.min.js"></script>
-<!-- Bootstrap4 Duallistbox -->
-<script src="<?=base_url()?>assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
-<!-- InputMask -->
-<script src="<?=base_url()?>assets/plugins/moment/moment.min.js"></script>
-<script src="<?=base_url()?>assets/plugins/inputmask/jquery.inputmask.min.js"></script>
-<!-- date-range-picker -->
-<script src="<?=base_url()?>assets/plugins/daterangepicker/daterangepicker.js"></script>
-<!-- bootstrap color picker -->
-<script src="<?=base_url()?>assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="<?=base_url()?>assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-<!-- Bootstrap Switch -->
-<script src="<?=base_url()?>assets/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
-<!-- BS-Stepper -->
-<script src="<?=base_url()?>assets/plugins/bs-stepper/js/bs-stepper.min.js"></script>
-<!-- dropzonejs -->
-<script src="<?=base_url()?>assets/plugins/dropzone/min/dropzone.min.js"></script>
+<!-- DataTables  & Plugins -->
+<script src="<?=base_url()?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/jszip/jszip.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<?=base_url()?>assets/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="<?=base_url()?>assets/dist/js/demo.js"></script>
 <!-- Page specific script -->
-
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
 </body>
 </html>

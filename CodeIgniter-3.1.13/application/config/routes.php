@@ -55,5 +55,10 @@ $route['insert-emp'] = 'Admin_Controller/insert_employee';
 $route['all-emp'] = 'Admin_Controller/show_employee';
 $route['delete_emp/(:num)'] = 'Admin_Controller/delete_employee/$1';
 $route['login'] = 'Admin_Controller/login_form';
+$route['add-product'] = 'Admin_controller/addProduct';
+$route['product-list'] = 'Admin_controller/dis_Product';
 
+$route['upload-photos'] = 'Admin_controller/show_photo_form';
+$route['upload-photos-submit'] = 'Admin_controller/upload_photos';
 
+$route['uploaded-images'] = 'Admin_controller/show_uploaded_images';

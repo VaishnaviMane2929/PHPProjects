@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AdminLTE 3 | Dashboard</title>
-
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
   <!-- Google Font: Source Sans Pro -->
@@ -27,6 +26,8 @@
   <link rel="stylesheet" href="<?=base_url()?>assets/plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="<?=base_url()?>assets/plugins/summernote/summernote-bs4.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 
@@ -276,7 +277,7 @@
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-table"></i>
               <p>
-                User Management
+              User Management
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
@@ -296,7 +297,6 @@
               </li>
             </ul>
           </li>
-
           <li class="nav-item">
           <a href="<?= site_url('admin_Controller/logout') ?>" class="nav-link"  onclick="return confirm('Are you sure you want to logout?');"> 
 
@@ -304,14 +304,17 @@
             <p>Logout</p>
           </a>
         </li>
-
-        
+         
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
   </aside>
+
+
+
+
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -320,12 +323,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Product Form</h1>
+            <h1>Product Table</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Product Form</li>
+              <li class="breadcrumb-item active">ProductTables</li>
             </ol>
           </div>
         </div>
@@ -334,70 +337,97 @@
 
     <!-- Main content -->
     <section class="content">
-    
-  <form class="row g-3" style="margin: 20px;" action="<?php echo site_url('Admin_Controller/addProduct'); ?>" method="post" >
-  <div class="col-md-6">
-    <label for="Name" class="form-label">Product Name</label>
-    <input type="text" class="form-control" name="Name" id="Name">
-  </div>
-  <div class="col-md-6">
-    <label for="price" class="form-label">price</label>
-    <input type="number" class="form-control"  name="price" id="price">
-  </div>
-  <div class="col-6">
-    <label for="date" class="form-label">date</label>
-    <input type="date" class="form-control" name="date" id="date">
-  </div>
-  <div class="col-6">
-    <label for="invoiceNumber" class="form-label">invoice Number</label>
-    <input type="text" class="form-control" name="invoiceNumber" id="invoiceNumber" >
-  </div>
+    <div class="container py-5">
  
-  <br/>
- 
-<input type="hidden" name="pid" value="<?= isset($latest_pid) ? $latest_pid : '' ?>">
-
-<br/> <br/> <br/> <br/> <br/>
-<div class="table-responsive">
-  <table id="invoiceTable" class="table table-bordered table-striped align-middle">
-    <thead class="table-dark">
-      <tr>
-        <th>Item</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Total Price</th>
-        <th>
-          <button class="btn btn-success btn-sm" type="button" onclick="addRow()">
-            <i class="fa fa-plus"></i> Add
-          </button>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><input type="text" name="productname[]" class="form-control" required></td>
-        <td><input type="number" name="qty[]" class="form-control" required></td>
-        <td><input type="number" name="price[]" class="form-control" required></td>
-        <td><input type="number" name="totalPrice[]" class="form-control" required></td>
-        <td>
-          <button class="btn btn-danger btn-sm" type="button" onclick="removeRow(this)">
-            <i class="fa fa-trash"></i> Delete
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="text-end">
+  <a href="<?= site_url('Admin_controller/dis_Product') ?>" class="btn btn-success mb-3">
+    <i class="fa-solid fa-plus"></i> Add New Product
+  </a>
 </div>
 
 
-    
-    <div class="col-6">
-    <button class="btn btn-primary" type="submit">Submit item</button>
-  </div>
-    
-</form>
+ 
 
-   <!-- /.container-fluid -->
+
+  <div class="table-responsive shadow-sm rounded">
+    <table class="table table-bordered table-hover text-center" id="productTable">
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Date</th>
+          <th>Invoice Number</th>
+          <th>Items</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+ <?php if (!empty($products)): ?>
+    <?php foreach ($products as $p): ?>
+        <tr>
+            <td><?= $p->pname ?></td>
+            <td><?= $p->pdate ?></td>
+            <td><?= $p->pinvoice_no ?></td>
+            <td>
+                <button class="btn btn-primary btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#itemModal"
+                        onclick="loadItems(<?= $p->pid ?>)">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </td>
+            <td>
+                <button class="btn btn-outline-danger btn-sm">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>
+                <button class="btn btn-outline-warning btn-sm">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+<?php else: ?>
+    <tr>
+        <td colspan="5">No products found.</td>
+    </tr>
+<?php endif; ?>
+
+</tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="itemModalLabel">Item Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-hover text-center">
+          <thead>
+            <tr>
+              <th class="color-dark">Item Name</th>
+              <th class="color-dark">Quantity</th>
+              <th class="color-dark">Price (₹)</th>
+              <th class="color-dark">Total (₹)</th>
+              <th class="color-dark">Action</th>
+
+            </tr>
+          </thead>
+          <tbody id="itemTableBody">
+            <!-- Items will be dynamically loaded here -->
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
     </section>
     <!-- /.content -->
   </div>
@@ -417,70 +447,68 @@
 </div>
 <!-- ./wrapper -->
 
+<!-- Bootstrap Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+function loadItems(pid) {
+    fetch("<?= site_url('Admin_Controller/get_items_by_pid/') ?>" + pid)
 
-document.addEventListener('input', function(e) {
-  if (e.target.classList.contains('price') || e.target.classList.contains('qty')) {
-    const row = e.target.closest('tr');
-    const qty = parseFloat(row.querySelector('.qty').value) || 0;
-    const price = parseFloat(row.querySelector('.price').value) || 0;
-    const total = qty * price;
-    row.querySelector('.totalPrice').value = total.toFixed(2);
-  }
-});
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById('itemTableBody');
+      tbody.innerHTML = '';
 
-function addRow() {
-    const table = document.getElementById('invoiceTable').getElementsByTagName('tbody')[0];
-    const newRow = table.rows[0].cloneNode(true);
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4">No items found</td></tr>';
+        return;
+      }
 
-    // Clear the input values
-    const inputs = newRow.getElementsByTagName('input');
-    for (let input of inputs) {
-        input.value = '';
-    }
+      data.forEach(item => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.iname}</td>
+            <td>${item.iquantity}</td>
+            <td>${item.iprice}</td>
+            <td>${item.total_price}</td>
+            <td>
+          <button class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-trash"></i> Delete</button>
+          <button class="btn btn-outline-warning btn-sm"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+       </td>
+          </tr>
+        `;
+      });
+    });
 
-    table.appendChild(newRow);
-}
+    <td>
+    <a href="<?= base_url('Admin_controller/delete_Product/' . $p['pid']) ?>" 
+       class="btn btn-danger btn-sm"
+       onclick="return confirm('Are you sure you want to delete this product and its items?');">
+       Delete
+    </a>
+</td>
 
-function removeRow(btn) {
-    const row = btn.closest('tr');
-    const table = row.parentNode;
-    if (table.rows.length > 1) {
-        table.removeChild(row);
-    }
 }
 </script>
 
 
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-  
-   
 <!-- jQuery -->
 <script src="<?=base_url()?>assets/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="<?=base_url()?>assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- Select2 -->
-<script src="<?=base_url()?>assets/plugins/select2/js/select2.full.min.js"></script>
-<!-- Bootstrap4 Duallistbox -->
-<script src="<?=base_url()?>assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
-<!-- InputMask -->
-<script src="<?=base_url()?>assets/plugins/moment/moment.min.js"></script>
-<script src="<?=base_url()?>assets/plugins/inputmask/jquery.inputmask.min.js"></script>
-<!-- date-range-picker -->
-<script src="<?=base_url()?>assets/plugins/daterangepicker/daterangepicker.js"></script>
-<!-- bootstrap color picker -->
-<script src="<?=base_url()?>assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="<?=base_url()?>assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-<!-- Bootstrap Switch -->
-<script src="<?=base_url()?>assets/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
-<!-- BS-Stepper -->
-<script src="<?=base_url()?>assets/plugins/bs-stepper/js/bs-stepper.min.js"></script>
-<!-- dropzonejs -->
-<script src="<?=base_url()?>assets/plugins/dropzone/min/dropzone.min.js"></script>
+<!-- DataTables  & Plugins -->
+<script src="<?=base_url()?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/jszip/jszip.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="<?=base_url()?>assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<?=base_url()?>assets/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->

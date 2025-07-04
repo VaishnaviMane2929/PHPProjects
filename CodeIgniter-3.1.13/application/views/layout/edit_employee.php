@@ -1,58 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Edit Employee</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 500px;
+      margin: 60px auto;
+      background: #ffffff;
+      padding: 30px 40px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+    label {
+      margin-top: 10px;
+      font-weight: 500;
+      color: #555;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="file"],
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      transition: border-color 0.3s;
+    }
+    input:focus,
+    textarea:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+    img {
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
 </head>
 <body>
 
-<div class="content-wrapper mt-4">
   <div class="container">
-    <h1 class="mb-4">Edit Employee</h1>
+    <form action="<?= site_url('Admin_controller/update_employee') ?>" method="post" enctype="multipart/form-data">
+      <h2>Edit Employee</h2>
 
-    <div class="card card-primary">
-      <div class="card-header">
-        <h3 class="card-title">Edit Form</h3>
-      </div>
+      <input type="hidden" name="eid" value="<?= $emp->eid ?>">
 
-      <form action="<?= base_url('Admin_Controller/update_employee') ?>" method="post">
-        <div class="card-body">
-          <input type="hidden" name="eid" value="<?= $employee->eid ?>">
+      <label for="ename">Name:</label>
+      <input type="text" name="ename" id="ename" value="<?= $emp->ename ?>" required>
 
-          <div class="form-group">
-            <label for="ename">Employee Name</label>
-            <input type="text" class="form-control" name="ename" value="<?= $employee->ename ?>" required>
-          </div>
+      <label for="econt">Contact:</label>
+      <input type="text" name="econt" id="econt" value="<?= $emp->econt ?>" required>
 
-          <div class="form-group">
-            <label for="eadds">Address</label>
-            <input type="text" class="form-control" name="eadds" value="<?= $employee->eadds ?>" required>
-          </div>
+      <label for="egmail">Email:</label>
+      <input type="egmail" name="egmail" id="egmail" value="<?= $emp->egmail ?>" required>
 
-          <div class="form-group">
-            <label for="econt">Contact</label>
-            <input type="text" class="form-control" name="econt" value="<?= $employee->econt ?>" required>
-          </div>
+      <label>Current Photo:</label><br>
+      <img src="<?= base_url('uploads/' . $emp->ephoto) ?>" width="80" height="80" alt="Employee Photo">
 
-          <div class="form-group">
-            <label for="egmail">Email</label>
-            <input type="email" class="form-control" name="egmail" value="<?= $employee->egmail ?>" required>
-          </div>
+      <label for="ephoto">Change Photo:</label>
+      <input type="file" name="ephoto" id="ephoto" accept="image/*">
 
-          <div class="form-group">
-            <label for="eroll">Roll Number</label>
-            <input type="text" class="form-control" name="eroll" value="<?= $employee->eroll ?>" required>
-          </div>
-        </div>
+      <label for="eadds">Address:</label>
+      <textarea name="eadds" id="eadds" rows="4" required><?= $emp->eadds ?></textarea>
 
-        <div class="card-footer">
-          <button type="submit" class="btn btn-primary">Update Employee</button>
-          <a href="<?= base_url('Admin_Controller/show_employee') ?>" class="btn btn-secondary">Cancel</a>
-        </div>
-      </form>
-    </div>
+      <button type="submit">Update Employee</button>
+    </form>
   </div>
-</div>
 
 </body>
 </html>
