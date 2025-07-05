@@ -294,13 +294,11 @@ public function show_photo_form() {
 public function upload_photos() {
     $this->load->helper(['form', 'url']);
     $this->load->library('upload');
-    $this->load->library('session');
     $this->load->model('Emp_model');
 
     $count = count($_FILES['photos']['name']);
     $files = $_FILES;
     $uploadPath = './uploads/';
-    $upload_success = false;
 
     for ($i = 0; $i < $count; $i++) {
         $_FILES['photo']['name']     = $files['photos']['name'][$i];
@@ -319,25 +317,65 @@ public function upload_photos() {
         if ($this->upload->do_upload('photo')) {
             $data = $this->upload->data();
             $photoData = ['photos_name' => $data['file_name']];
-            $this->Emp_model->insert_photo($photoData); // ✅ INSERT into DB
-            $upload_success = true;
+            $this->Emp_model->insert_photo($photoData);
         }
     }
 
-    if ($upload_success) {
-        $this->session->set_flashdata('success', 'Photos uploaded and saved to database!');
-    } else {
-        $this->session->set_flashdata('error', 'No photos uploaded.');
+    redirect('Admin_controller/show_uploaded_images');
+}
+
+ public function show_uploaded_images() {
+        $this->load->model('Emp_model');
+        $data['images'] = $this->Emp_model->get_all_photos();
+        $this->load->view('layout/image_gallery', $data); // Loads image_gallery.php
     }
 
-    redirect('Admin_controller/show_photo_form');
-}
-public function show_uploaded_images() {
-    $this->load->model('Emp_model');
-    $data['images'] = $this->Emp_model->get_all_photos();
-    $this->load->view('layout/image_gallery', $data); // image_gallery.php = display
-}
+    // ✅ Delete photo (Normal URL-based)
+    public function delete_photo($id) {
+        $this->load->model('Emp_model');
+        $photo = $this->Emp_model->get_photo_by_id($id);
 
+        if ($photo) {
+            // Delete file from folder
+            $file_path = './uploads/' . $photo['photos_name'];
+            if (file_exists($file_path)) {
+                unlink($file_path);
+            }
+
+            // Delete record from DB
+            $this->Emp_model->delete_photo($id);
+        }
+
+        // Redirect back to image list
+        redirect('Admin_controller/show_uploaded_images');
+    }
+
+    // ✅ Edit photo page loader
+    public function edit_photo($id) {
+        $this->load->model('Emp_model');
+        $data['photo'] = $this->Emp_model->get_photo_by_id($id);
+        $this->load->view('layout/edit_photo', $data);  // You will create edit_photo.php
+    }
+
+    // ✅ AJAX delete image (without page refresh)
+   public function delete_photo_ajax() {
+    $id = $this->input->post('id');
+    $this->load->model('Emp_model');
+    
+    $photo = $this->Emp_model->get_photo_by_id($id);
+
+    if ($photo) {
+        $path = './uploads/' . $photo['photos_name'];
+        if (file_exists($path)) {
+            unlink($path);
+        }
+
+        $this->Emp_model->delete_photo($id);
+        echo json_encode(['status' => 'success']);
+    } else {
+        echo json_encode(['status' => 'fail']);
+    }
+}
 
 //  public function view_photos() {
 //     $this->load->model('Emp_model');

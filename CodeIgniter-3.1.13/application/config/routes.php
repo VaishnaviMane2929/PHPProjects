@@ -62,3 +62,8 @@ $route['upload-photos'] = 'Admin_controller/show_photo_form';
 $route['upload-photos-submit'] = 'Admin_controller/upload_photos';
 
 $route['uploaded-images'] = 'Admin_controller/show_uploaded_images';
+$route['delete-photo-ajax'] = 'Admin_controller/delete_photo_ajax';
+
+
+
+

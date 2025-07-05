@@ -104,11 +104,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         public function addProductItem($data) {
             return $this->db->insert('item', $data);
         } 
-     public function insert_photo($data) {
-    return $this->db->insert('photos', $data); // your table name should be `photos`
+    public function insert_photo($data) {
+        return $this->db->insert('photos', $data); // your table name
+    }
+
+    // Get all uploaded photos
+    public function get_all_photos() {
+        return $this->db->get('photos')->result_array();
+    }
+
+    // Get a single photo by its ID
+    public function get_photo_by_id($id) {
+    return $this->db->get_where('photos', ['photos_id' => $id])->row_array();
 }
-public function get_all_photos() {
-    return $this->db->get('photos')->result_array();
+
+public function delete_photo($id) {
+    return $this->db->delete('photos', ['photos_id' => $id]);
 }
 
 
