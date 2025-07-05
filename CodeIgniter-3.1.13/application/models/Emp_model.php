@@ -114,13 +114,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     }
 
     // Get a single photo by its ID
-    public function get_photo_by_id($id) {
+  public function get_photo_by_id($id) {
     return $this->db->get_where('photos', ['photos_id' => $id])->row_array();
 }
+
 
 public function delete_photo($id) {
     return $this->db->delete('photos', ['photos_id' => $id]);
 }
+
+public function update_photo($id, $filename) {
+    $this->db->where('photos_id', $id);
+    return $this->db->update('photos', ['photos_name' => $filename]);
+}
+
+
+
+
 
 
     

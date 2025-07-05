@@ -331,62 +331,73 @@ public function upload_photos() {
     }
 
     // ✅ Delete photo (Normal URL-based)
-    public function delete_photo($id) {
-        $this->load->model('Emp_model');
-        $photo = $this->Emp_model->get_photo_by_id($id);
-
-        if ($photo) {
-            // Delete file from folder
-            $file_path = './uploads/' . $photo['photos_name'];
-            if (file_exists($file_path)) {
-                unlink($file_path);
-            }
-
-            // Delete record from DB
-            $this->Emp_model->delete_photo($id);
-        }
-
-        // Redirect back to image list
-        redirect('Admin_controller/show_uploaded_images');
-    }
-
-    // ✅ Edit photo page loader
-    public function edit_photo($id) {
-        $this->load->model('Emp_model');
-        $data['photo'] = $this->Emp_model->get_photo_by_id($id);
-        $this->load->view('layout/edit_photo', $data);  // You will create edit_photo.php
-    }
-
-    // ✅ AJAX delete image (without page refresh)
-   public function delete_photo_ajax() {
-    $id = $this->input->post('id');
+   public function delete_photo($id) {
     $this->load->model('Emp_model');
-    
     $photo = $this->Emp_model->get_photo_by_id($id);
 
     if ($photo) {
-        $path = './uploads/' . $photo['photos_name'];
-        if (file_exists($path)) {
-            unlink($path);
+        $file_path = './uploads/' . $photo['photos_name'];
+        if (file_exists($file_path)) {
+            unlink($file_path); // Delete file
         }
 
-        $this->Emp_model->delete_photo($id);
-        echo json_encode(['status' => 'success']);
-    } else {
-        echo json_encode(['status' => 'fail']);
+        $this->Emp_model->delete_photo($id); // Delete record
+        $this->session->set_flashdata('success', 'Photo deleted successfully!');
+
     }
+
+    redirect('Admin_controller/show_uploaded_images'); // Redirect back
 }
 
-//  public function view_photos() {
-//     $this->load->model('Emp_model');
-//     $data['images'] = $this->Emp_model->get_all_photos();
-//     $this->load->view('layout/image_gallery', $data); // ✅ You must create this view
-// }
+
+    // ✅ Edit photo page loader
+    // public function edit_photo($id) {
+    //     $this->load->model('Emp_model');
+    //     $data['photo'] = $this->Emp_model->get_photo_by_id($id);
+    //     $this->load->view('layout/edit_photo', $data);  // You will create edit_photo.php
+    // }
+
+    
+ public function edit_photo($id) {
+        $this->load->model('Emp_model');
+        $data['photo'] = $this->Emp_model->get_photo_by_id($id);
+        $this->load->view('layout/edit_photo', $data);
+    }
+
+public function update_photo() {
+    $this->load->model('Emp_model');
+    
+    $id = $this->input->post('id');
+    $old_image = $this->input->post('old_image');
+
+    if (!empty($_FILES['new_photo']['name'])) {
+        $config['upload_path']   = FCPATH . 'uploads/';
+        $config['allowed_types'] = 'jpg|jpeg|png|gif';
+        $config['max_size']      = 2048;
+
+        $this->load->library('upload', $config);
+
+        if ($this->upload->do_upload('new_photo')) {
+            $data = $this->upload->data();
+            $new_image = $data['file_name'];
+
+            if (file_exists(FCPATH . 'uploads/' . $old_image)) {
+                unlink(FCPATH . 'uploads/' . $old_image);
+            }
+
+            $this->Emp_model->update_photo($id, $new_image);
+            $this->session->set_flashdata('success', 'Photo updated successfully!');
+        } else {
+            $this->session->set_flashdata('error', 'Upload failed: ' . $this->upload->display_errors('', ''));
+        }
+    } else {
+        $this->session->set_flashdata('error', 'No file selected!');
+    }
+
+    redirect('show-uploaded-images');
+}
 
 
-//     public function image() {
-//         $this->load->view('layout/image');
-//     }
 }
 
 

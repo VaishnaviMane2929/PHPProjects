@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>  
 <html>
 <head>
     <title>Uploaded Images</title>
@@ -16,24 +16,20 @@
             transition: 0.3s ease;
             cursor: pointer;
         }
-
         .thumb-img:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             border-color: #007bff;
         }
-
         .modal-img {
             max-width: 100%;
             max-height: 80vh;
             border-radius: 12px;
         }
-
         h4 {
             font-weight: bold;
             color: #2c3e50;
         }
-
         .btn-sm {
             margin-right: 4px;
         }
@@ -41,6 +37,19 @@
 </head>
 <body>
 <div class="container mt-4">
+
+<?php if ($this->session->flashdata('success')): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= $this->session->flashdata('success') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php elseif ($this->session->flashdata('error')): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?= $this->session->flashdata('error') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
     <h4 class="mb-4">📸 Uploaded Images with Modal Preview</h4>
     <table class="table table-bordered table-hover bg-white shadow-sm rounded">
         <thead class="table-dark">
@@ -53,7 +62,7 @@
         </thead>
         <tbody>
             <?php $i = 1; foreach ($images as $img): ?>
-                <tr id="row-<?= $img['photos_id'] ?>">
+                <tr>
                     <td><?= $i++; ?></td>
                     <td>
                         <img src="<?= base_url('uploads/' . $img['photos_name']) ?>" 
@@ -65,13 +74,21 @@
                     </td>
                     <td><?= $img['photos_name'] ?></td>
                     <td>
-                        <a href="<?= base_url('Admin_controller/edit_photo/' . $img['photos_id']) ?>" class="btn btn-warning btn-sm">Edit</a>
-                        <button class="btn btn-danger btn-sm delete-btn" data-id="<?= $img['photos_id'] ?>">Delete</button>
+                        <a href="<?= site_url('edit-photo/' . $img['photos_id']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                        
+                        <a href="<?= base_url('index.php/delete-photo/' . $img['photos_id']) ?>" 
+   class="btn btn-danger btn-sm"
+   onclick="return confirm('Are you sure you want to delete this image?');">
+   Delete
+</a>
+
                     </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
+
+
 </div>
 
 <!-- Modal -->
@@ -89,7 +106,7 @@
   </div>
 </div>
 
-<!-- Bootstrap JS Bundle (includes Popper) -->
+<!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const imageModal = document.getElementById('imageModal');
@@ -101,35 +118,15 @@
         modalImage.src = fullImageUrl;
     });
 
-    // AJAX delete
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            if (!confirm('Are you sure you want to delete this image?')) return;
-
-            const id = this.getAttribute('data-id');
-            const row = document.getElementById('row-' + id);
-
-            fetch('<?= base_url('delete-photo-ajax') ?>', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `id=${id}`
-})
-.then(response => response.json())
-.then(data => {
-    if (data.status === 'success') {
-        row.remove();
-    } else {
-        alert('❌ Failed to delete. Server returned: ' + JSON.stringify(data));
+    setTimeout(function () {
+    let alert = document.querySelector('.alert');
+    if (alert) {
+        alert.classList.remove('show');
+        alert.classList.add('fade');
     }
-})
+}, 3000);
 
-.catch(error => {
-    console.error('Error:', error);
-    alert('Something went wrong.');
-});
-
-        });
-    });
 </script>
+
 </body>
 </html>
