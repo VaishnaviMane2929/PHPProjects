@@ -371,37 +371,52 @@ public function update_photo() {
     $old_image = $this->input->post('old_image');
 
     if (!empty($_FILES['new_photo']['name'])) {
-        $config['upload_path']   = FCPATH . 'uploads/';
-        $config['allowed_types'] = 'jpg|jpeg|png|gif';
-        $config['max_size']      = 2048;
+       $config['upload_path'] = FCPATH . 'uploads/';
+$config['allowed_types'] = 'jpg|jpeg|png';
+$config['max_size'] = 2048; // Optional: 2MB limit
+
+        // Check & create folder if missing
+        // if (!is_dir($config['upload_path'])) {
+        //     mkdir($config['upload_path'], 0777, true);
+        // }
 
         $this->load->library('upload', $config);
 
-        if ($this->upload->do_upload('new_photo')) {
-            $data = $this->upload->data();
-            $new_image = $data['file_name'];
+        $config['upload_path'] = FCPATH . 'uploads/';
+$config['allowed_types'] = 'jpg|jpeg|png';
+$config['max_size'] = 2048; // Optional
 
-            if (file_exists(FCPATH . 'uploads/' . $old_image)) {
-                unlink(FCPATH . 'uploads/' . $old_image);
-            }
+$this->load->library('upload', $config);
 
-            $this->Emp_model->update_photo($id, $new_image);
-            $this->session->set_flashdata('success', 'Photo updated successfully!');
-        } else {
-            $this->session->set_flashdata('error', 'Upload failed: ' . $this->upload->display_errors('', ''));
+if (!empty($_FILES['new_photo']['name'])) {
+    if ($this->upload->do_upload('new_photo')) {
+        $data = $this->upload->data();
+        $new_image = $data['file_name'];
+
+        // Delete old image
+        $old_path = $config['upload_path'] . $old_image;
+        if (!empty($old_image) && file_exists($old_path)) {
+            unlink($old_path);
         }
+
+        $this->Emp_model->update_photo($id, $new_image);
+        $this->session->set_flashdata('success', 'Photo updated successfully!');
     } else {
-        $this->session->set_flashdata('error', 'No file selected!');
+        $this->session->set_flashdata('error', 'Upload failed: ' . $this->upload->display_errors('', ''));
     }
+} else {
+    $this->session->set_flashdata('error', 'No file selected!');
+}
 
     redirect('show-uploaded-images');
 }
 
 
+
 }
 
 
-
+}
    
     
     

@@ -37,7 +37,11 @@
 </head>
 <body>
 <div class="container mt-4">
+  <!-- Add Image Button -->
+    <div class="mb-3 text-end">
+       <a href="<?= base_url('index.php/upload-photos') ?>" class="btn btn-success">➕ Add Images</a>
 
+    </div>
 <?php if ($this->session->flashdata('success')): ?>
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <?= $this->session->flashdata('success') ?>

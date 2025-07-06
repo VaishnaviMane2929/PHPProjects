@@ -123,9 +123,15 @@ public function delete_photo($id) {
     return $this->db->delete('photos', ['photos_id' => $id]);
 }
 
-public function update_photo($id, $filename) {
+public function update_photo($id, $new_image) {
     $this->db->where('photos_id', $id);
-    return $this->db->update('photos', ['photos_name' => $filename]);
+    $this->db->update('photos', ['photos_name' => $new_image]);
+}
+
+public function show_uploaded_images() {
+    $this->load->model('Emp_model');
+    $data['images'] = $this->Emp_model->get_all_photos();  // returns photos array
+    $this->load->view('layout/show_uploaded_images', $data);
 }
 
 

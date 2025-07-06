@@ -69,6 +69,7 @@ $route['delete-photo/(:num)'] = 'Admin_controller/delete_photo/$1';
 $route['edit-photo/(:num)'] = 'Admin_controller/edit_photo/$1';
 $route['update-photo'] = 'Admin_controller/update_photo';
 $route['show-uploaded-images'] = 'Admin_controller/show_uploaded_images';
+$route['upload-photos'] = 'Admin_controller/show_photo_form';
 
 
 
